@@ -9,6 +9,7 @@ from html6 import extract_reviews_from_html
 from uuid import uuid4
 import json
 import ast
+import os
 from arq import create_pool
 from arq.connections import RedisSettings
 import logging
@@ -28,7 +29,13 @@ class ScrapeResponse(BaseModel):
     message: str
 
 class Settings:
-    redis_settings = RedisSettings(host="localhost", port=6379)
+    # Configure Redis for Render's environment
+    redis_settings = RedisSettings(
+        host=os.getenv("REDIS_HOST", "localhost"),
+        port=int(os.getenv("REDIS_PORT", 6379)),
+        password=os.getenv("REDIS_PASSWORD", None),
+    )
+
     
 
 # Initialize Redis pool

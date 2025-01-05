@@ -5,13 +5,18 @@ from arq.connections import RedisSettings
 from scraping_task import scrape_reviews_task  # Import your task
 from database import get_status_pool  # Database connection pool
 from datetime import datetime,timezone
+import os
 
 # Set up logging to track progress
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Redis settings
-REDIS_SETTINGS = RedisSettings(host="localhost", port=6379)
+REDIS_SETTINGS = RedisSettings(
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", "6379")),
+    password=os.getenv("REDIS_PASSWORD", None)
+)
 
 async def startup(ctx):
     logger.info("Arq worker starting...")
